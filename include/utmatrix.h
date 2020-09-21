@@ -62,21 +62,16 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si)
 {
-    cout << "введите вектор: ";
     Size = s;
+    StartIndex = si;
     pVector = new ValType[Size];
-    for (int i = 0; i < size; i++)
-    {
-        cin >> pVector[i];
-    }
-    cout << endl;
-
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> //конструктор копирования
 TVector<ValType>::TVector(const TVector<ValType> &v)
 {
     Size = v.Size;
+    StartIndex = v.StartIndex;
     pVector = new ValType[Size];
     for (int i = 0; i < Size; i++)
     {
@@ -93,17 +88,44 @@ TVector<ValType>::~TVector()
 template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos)
 {
-
+    return pVector[pos - StartIndex];
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
 bool TVector<ValType>::operator==(const TVector &v) const
 {
+    if (Size != v.Size)
+    {
+        return false;
+    }
+    for (int i = 0; i < size; i++)
+    {
+        if (pVector[i] != v.pVector)
+        {
+            return false;
+        }
+    }
+    return true;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
 bool TVector<ValType>::operator!=(const TVector &v) const
 {
+    if (Size != v.Size)
+    {
+        return true;
+    }
+    else
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            if (pVector[i] != v.pVector)
+            {
+                return true;
+            }
+        }
+    }
+    return false;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // присваивание
