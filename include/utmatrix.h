@@ -62,25 +62,38 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si)
 {
-    if (s<0||)
-        throw s;
-    size = s;
+    cout << "введите вектор: ";
+    Size = s;
+    pVector = new ValType[Size];
+    for (int i = 0; i < size; i++)
+    {
+        cin >> pVector[i];
+    }
+    cout << endl;
 
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> //конструктор копирования
 TVector<ValType>::TVector(const TVector<ValType> &v)
 {
+    Size = v.Size;
+    pVector = new ValType[Size];
+    for (int i = 0; i < Size; i++)
+    {
+        pVector[i] = v.pVector[i];
+    }
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType>
 TVector<ValType>::~TVector()
 {
+    delete[] pVector;
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos)
 {
+
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // сравнение
