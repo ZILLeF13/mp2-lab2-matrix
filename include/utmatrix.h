@@ -62,6 +62,10 @@ public:
 template <class ValType>
 TVector<ValType>::TVector(int s, int si)
 {
+    if (s<=0 || s>MAX_VECTOR_SIZE || si<0 || si>MAX_VECTOR_SIZE)
+    {
+        throw s;
+    }
     Size = s;
     StartIndex = si;
     pVector = new ValType[Size];
@@ -88,6 +92,10 @@ TVector<ValType>::~TVector()
 template <class ValType> // доступ
 ValType& TVector<ValType>::operator[](int pos)
 {
+    if ((pos-StartIndex)<0 || (pos-StartIndex)>=Size)
+    {
+        throw pos;
+    }
     return pVector[pos - StartIndex];
 } /*-------------------------------------------------------------------------*/
 
@@ -98,7 +106,7 @@ bool TVector<ValType>::operator==(const TVector &v) const
     {
         return false;
     }
-    for (int i = 0; i < size; i++)
+    for (int i = 0; i < Size; i++)
     {
         if (pVector[i] != v.pVector[i])
         {
@@ -136,8 +144,8 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
         if (Size != v.Size)
         {
             delete[]pVector;
-            pVector = new ValType[Size];
             Size = v.Size;
+            pVector = new ValType[Size];
         }
         for (int i = 0; i < Size; i++)
         {
@@ -151,7 +159,7 @@ TVector<ValType>& TVector<ValType>::operator=(const TVector &v)
 template <class ValType> // прибавить скаляр
 TVector<ValType> TVector<ValType>::operator+(const ValType &val)
 {
-    TVector <ValType> res(Size);
+    TVector <ValType> res(*this);
     for (int i = 0; i < Size; i++)
     {
         res[i] = res[i] + val;
@@ -162,7 +170,7 @@ TVector<ValType> TVector<ValType>::operator+(const ValType &val)
 template <class ValType> // вычесть скаляр
 TVector<ValType> TVector<ValType>::operator-(const ValType &val)
 {
-    TVector <ValType> res(Size);
+    TVector <ValType> res(*this);
     for (int i = 0; i < Size; i++)
     {
         res[i] = res[i] - val;
@@ -173,7 +181,7 @@ TVector<ValType> TVector<ValType>::operator-(const ValType &val)
 template <class ValType> // умножить на скаляр
 TVector<ValType> TVector<ValType>::operator*(const ValType &val)
 {
-    TVector <ValType> res(Size);
+    TVector <ValType> res(*this);
     for (int i = 0; i < Size; i++)
     {
         res[i] = res[i] * val;
@@ -184,7 +192,11 @@ TVector<ValType> TVector<ValType>::operator*(const ValType &val)
 template <class ValType> // сложение
 TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 {
-    TVector <ValType> res(Size);
+    if (Size != v.Size || StartIndex != v.StartIndex)
+    {
+        throw Size;
+    }
+    TVector <ValType> res(Size,StartIndex);
     for (int i = 0; i < Size; i++)
     {
         res[i] = pVector[i] + v.pVector[i];
@@ -195,7 +207,11 @@ TVector<ValType> TVector<ValType>::operator+(const TVector<ValType> &v)
 template <class ValType> // вычитание
 TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v)
 {
-    TVector <ValType> res(Size);
+    if(Size != v.Size || StartIndex != v.StartIndex)
+    {
+        throw Size;
+    }
+    TVector <ValType> res(Size, StartIndex);
     for (int i = 0; i < Size; i++)
     {
         res[i] = pVector[i] - v.pVector[i];
@@ -204,12 +220,17 @@ TVector<ValType> TVector<ValType>::operator-(const TVector<ValType> &v)
 } /*-------------------------------------------------------------------------*/
 
 template <class ValType> // скалярное произведение
-ValType TVector<ValType>::operator*(const TVector<ValType> &v)
+ValType TVector<ValType>::operator*(const TVector<ValType>& v)
 {
-    TVector <ValType> res(Size);
+    if (Size != v.Size || StartIndex != v.StartIndex)
+    {
+        throw Size;
+    }
+  ValType res;
+    res = pVector[0] * v.pVector[0];
     for (int i = 0; i < Size; i++)
     {
-        res[i] = pVector[i] * v.pVector[i];
+        res += pVector[i] * v.pVector[i];
     }
     return res;
 } /*-------------------------------------------------------------------------*/
@@ -247,6 +268,10 @@ public:
 template <class ValType>
 TMatrix<ValType>::TMatrix(int s): TVector<TVector<ValType> >(s)
 {
+    if (s<0 || s>MAX_MATRIX_SIZE)
+    {
+        throw s;
+    }
     for (int i = 0; i < s; i++)
     {
         TVector<ValType> tmp(s - i, i);
